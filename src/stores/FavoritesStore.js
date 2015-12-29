@@ -4,18 +4,18 @@
 var alt = require('../alt');
 var LocationActions = require('../actions/LocationActions');
 
-class LocationStore {
+class FavoritesStore {
     constructor() {
         this.locations = [];
 
         this.bindListeners({
-            handleUpdateLocations: LocationActions.UPDATE_LOCATIONS
+            addFavoriteLocation: LocationActions.FAVORITE_LOCATION
         });
     }
 
-    handleUpdateLocations(locations) {
-        this.locations = locations;
+    addFavoriteLocation(location) {
+        this.locations.push(location);
     }
 }
 
-module.exports = alt.createStore(LocationStore, 'LocationStore');
+module.exports = alt.createStore(FavoritesStore, 'FavoritesStore');
