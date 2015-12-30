@@ -3,17 +3,26 @@
  */
 var alt = require('../alt');
 var LocationActions = require('../actions/LocationActions');
+var LocationSource = require('../sources/LocationSource');
+var FavoritesStore = require('./FavoritesStore');
 
 class LocationStore {
     constructor() {
         this.locations = [];
         this.errorMessage = null;
+
         this.bindListeners({
             handleUpdateLocations: LocationActions.UPDATE_LOCATIONS,
             handleFetchLocations: LocationActions.FETCH_LOCATIONS,
             handleLocationsFailed: LocationActions.LOCATIONS_FAILED,
             setFavorites: LocationActions.FAVORITE_LOCATION
         });
+
+        this.exportPublicMethods({
+            getLocation: this.getLocation
+        });
+
+        this.exportAsync(LocationSource);
     }
 
     handleUpdateLocations(locations) {
@@ -22,8 +31,6 @@ class LocationStore {
     }
 
     handleFetchLocations() {
-        // reset the array while we're fetching new locations so React can
-        // be smart and render a spinner for us since the data is empty.
         this.locations = [];
     }
 
@@ -59,6 +66,17 @@ class LocationStore {
                 }
             }
         });
+    }
+
+    getLocation(id) {
+        var { locations } = this.getState();
+        for (var i = 0; i < locations.length; i += 1) {
+            if (locations[i].id === id) {
+                return locations[i];
+            }
+        }
+
+        return null;
     }
 }
 
